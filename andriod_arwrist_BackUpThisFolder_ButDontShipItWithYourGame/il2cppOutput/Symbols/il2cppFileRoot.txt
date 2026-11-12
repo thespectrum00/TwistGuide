@@ -1,0 +1,1 @@
+C:\Users\wolas\unity_proj\ar_wristband\Library\Bee\artifacts\Android\il2cppOutput\cpp
