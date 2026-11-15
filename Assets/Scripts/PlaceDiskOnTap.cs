@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
@@ -7,6 +8,7 @@ using UnityEngine.XR.ARSubsystems;
 /// <summary>
 /// Put this on the XR Origin (it needs the AR Raycast Manager that sits there).
 /// The first tap on a detected surface moves the disk there and shows it.
+/// Taps on buttons and other UI are ignored, so pressing "?" never places the disk.
 /// </summary>
 [RequireComponent(typeof(ARRaycastManager))]
 public class PlaceDiskOnTap : MonoBehaviour
@@ -21,7 +23,11 @@ public class PlaceDiskOnTap : MonoBehaviour
 
     ARRaycastManager raycastManager;
     static readonly List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    static readonly List<RaycastResult> uiHits = new List<RaycastResult>();
     bool placed;
+
+    /// <summary>True once the disk is on a surface.</summary>
+    public bool Placed { get { return placed; } }
 
     void Awake()
     {
@@ -39,6 +45,8 @@ public class PlaceDiskOnTap : MonoBehaviour
             return;
 
         Vector2 screenPoint = pointer.position.ReadValue();
+        if (IsOverUI(screenPoint))
+            return;
         if (!raycastManager.Raycast(screenPoint, hits, TrackableType.PlaneWithinPolygon))
             return;
 
@@ -53,6 +61,18 @@ public class PlaceDiskOnTap : MonoBehaviour
                 plane.gameObject.SetActive(false);
             planeManager.enabled = false;
         }
+    }
+
+    static bool IsOverUI(Vector2 screenPoint)
+    {
+        EventSystem events = EventSystem.current;
+        if (events == null)
+            return false;
+        PointerEventData data = new PointerEventData(events);
+        data.position = screenPoint;
+        uiHits.Clear();
+        events.RaycastAll(data, uiHits);
+        return uiHits.Count > 0;
     }
 
     /// <summary>Hook this to a "Move disk" button if you want to place it again.</summary>

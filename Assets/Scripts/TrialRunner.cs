@@ -27,7 +27,7 @@ public class TrialRunner : MonoBehaviour
 
     [Header("Study settings")]
     [SerializeField] string participantId = "P01";
-    [SerializeField] GuideCondition condition = GuideCondition.Both;
+    [SerializeField] GuideCondition condition = GuideCondition.Visual;
     [Tooltip("Target angles in degrees. Keep them inside the wearer's comfortable wrist range.")]
     [SerializeField] float[] targets = { -60f, -40f, -20f, 20f, 40f, 60f };
     [SerializeField] float toleranceDeg = 3f;
@@ -41,9 +41,30 @@ public class TrialRunner : MonoBehaviour
     float startTime;
     int overshoots;
     int lastSign;
+    bool blockActive;
+    bool finished;
+    float lastAbsError;
+    float lastSeconds;
+    float sumAbsError;
+    float sumSeconds;
+    int completed;
 
     public string LogPath { get { return Path.Combine(Application.persistentDataPath, "trials.csv"); } }
+    /// <summary>True while a trial is waiting for Confirm.</summary>
     public bool Running { get { return running; } }
+    /// <summary>True from Start until the last trial of the block is confirmed (including the pauses between trials).</summary>
+    public bool BlockActive { get { return blockActive; } }
+    /// <summary>True after a whole block has been completed.</summary>
+    public bool Finished { get { return finished; } }
+    public GuideCondition Condition { get { return condition; } }
+    /// <summary>1-based number of the current (or just finished) trial.</summary>
+    public int TrialNumber { get { return Mathf.Min(index + 1, order.Count); } }
+    public int TrialCount { get { return order.Count; } }
+    public int Completed { get { return completed; } }
+    public float LastAbsError { get { return lastAbsError; } }
+    public float LastSeconds { get { return lastSeconds; } }
+    public float MeanAbsError { get { return completed > 0 ? sumAbsError / completed : 0f; } }
+    public float MeanSeconds { get { return completed > 0 ? sumSeconds / completed : 0f; } }
 
     /// <summary>For a dropdown listing Visual, Haptic, Both in that order.</summary>
     public void SetCondition(int value)
@@ -66,12 +87,17 @@ public class TrialRunner : MonoBehaviour
 
     public void StartBlock()
     {
-        if (running) return;
+        if (running || blockActive) return;
         order.Clear();
         for (int r = 0; r < repetitions; r++)
             order.AddRange(targets);
         Shuffle(order);
         index = 0;
+        completed = 0;
+        sumAbsError = 0f;
+        sumSeconds = 0f;
+        finished = false;
+        blockActive = true;
         StartTrial();
     }
 
@@ -127,6 +153,11 @@ public class TrialRunner : MonoBehaviour
         if (targetMarker != null) targetMarker.gameObject.SetActive(false);
 
         WriteRow(index + 1, finalAngle, error, seconds);
+        lastAbsError = Mathf.Abs(error);
+        lastSeconds = seconds;
+        sumAbsError += lastAbsError;
+        sumSeconds += seconds;
+        completed++;
 
         index++;
         if (index < order.Count)
@@ -136,6 +167,8 @@ public class TrialRunner : MonoBehaviour
         }
         else
         {
+            blockActive = false;
+            finished = true;
             SetStatus("Block finished. Saved to " + LogPath);
         }
     }
