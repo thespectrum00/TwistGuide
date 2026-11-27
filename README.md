@@ -24,10 +24,10 @@ A small band on the wrist measures how far the forearm twists and sends the angl
 ## Repository layout
 
 ```
-Assets/      Unity project (scene: WristbandScene)
-firmware/    MicroPython code for the band
-paper/       LaTeX source for the report
-docs/        wiring diagram and parts list
+Assets/       Unity project (scene: WristbandScene)
+firmware/     MicroPython code for the band
+tests/        short scripts to test each part of the band
+docs/         wiring diagram and parts list
 ```
 
 ## Running it
