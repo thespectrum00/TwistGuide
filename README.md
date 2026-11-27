@@ -4,9 +4,6 @@ Turn a virtual dial in phone AR by twisting your wrist.
 
 A small band on the wrist measures how far the forearm twists and sends the angle over Wi-Fi to an Android AR app, where it turns a virtual dial placed in the room. A green needle shows the target, and the app runs and logs simple target trials.
 
-**Demo video:** [link]  
-**Report (PDF):** [link]  
-**Portfolio page:** [link]
 
 ![TwistGuide: the band on the wrist and the dial on the phone](media/hero.jpg)
 
@@ -58,4 +55,4 @@ docs/        wiring diagram and parts list
 
 ## Author
 
-Adewola Saliu-Aina · [portfolio](https://adewolasaliuaina.framer.website) · niniola14@gmail.com
+Adewola Saliu-Aina · [portfolio](https://adewolasaliuaina.framer.website) · wolasaliuaina@gmail.com
