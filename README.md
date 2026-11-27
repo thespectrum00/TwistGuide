@@ -54,4 +54,4 @@ docs/        wiring diagram and parts list
 
 ## Author
 
-Adewola Saliu-Aina · [portfolio](https://adewolasaliuaina.framer.website) · wolasaliuaina@gmail.com
+Adewola Saliu-Aina · wolasaliuaina@gmail.com
