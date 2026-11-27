@@ -77,3 +77,15 @@ crashlytics-build.properties
 # Wristband secrets
 wifi_secrets.py
 __pycache__/
+
+# Unity build leftovers
+*_BackUpThisFolder_ButDontShipItWithYourGame/
+*_BurstDebugInformation_DoNotShip/
+/[Bb]uilds/
+*.apk
+*.aab
+
+# Editor files
+*.sln
+*.slnx
+.vscode/
